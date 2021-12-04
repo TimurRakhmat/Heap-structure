@@ -15,7 +15,7 @@ protected:
 		TValue val;
 		Node(TKey _key = 0, TValue _val = 0) : key(_key), val(_val) {};
 	};
-	Node* h;
+	Node* h = nullptr;
 
 	void heapify(int i) {
 		int left, right;
@@ -87,7 +87,7 @@ public:
 
 	void removeMin()
 	{
-		if (size < 0)
+		if (size < 1)
 			throw AHeap<TKey, TValue>::HeapException("REMOVE ERROR: EMPTY HEAP");
 		Node x;
 		x = h[0];
@@ -122,6 +122,7 @@ public:
 
 	~BinaryHeap()
 	{
-		delete h;
+		if (h)
+			delete h;
 	}
 };
