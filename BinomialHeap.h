@@ -47,7 +47,7 @@ protected:
 	{
 		nd1->right = nd1;
 		nd2->right = nd2;
-		int res = AHeap<TKey, TValue>::cmp->compare(nd1->key, nd2->key);
+		int res = this->cmp->compare(nd1->key, nd2->key);
 		if (res > 0)
 		{
 			nd2->degree++;
@@ -87,6 +87,7 @@ protected:
 		if (!heap->root)
 			return root;
 		Node* res = nullptr;
+		Node* res_par = nullptr;
 		Node* res_tmp = nullptr;
 		Node* tmp = nullptr;
 		bool e1 = true, e2 = true, e3 = true;
@@ -115,7 +116,15 @@ protected:
 				{
 					if (tmp->degree == res_tmp->degree)
 					{
+						if (!e3)
+						{
+							res_par = res;
+							while (res_par->right != res_tmp)
+								res_par = res_par->right;
+						}
 						res_tmp = merge_two(res_tmp, tmp);
+						if (!e3)
+							res_par->right = res_tmp;
 						if (e3)
 							res = res_tmp;
 					}
@@ -153,7 +162,15 @@ protected:
 				{
 					if (h1->degree == res_tmp->degree)
 					{
+						if (!e3)
+						{
+							res_par = res;
+							while (res_par->right != res_tmp)
+								res_par = res_par->right;
+						}
 						res_tmp = merge_two(res_tmp, h1);
+						if (!e3)
+							res_par->right = res_tmp;
 						if (e3)
 							res = res_tmp;
 					}
@@ -184,7 +201,15 @@ protected:
 			{
 				if (h1->degree == res_tmp->degree)
 				{
+					if (!e3)
+					{
+						res_par = res;
+						while (res_par->right != res_tmp)
+							res_par = res_par->right;
+					}
 					res_tmp = merge_two(res_tmp, h1);
+					if (!e3)
+						res_par->right = res_tmp;
 					if (e3)
 						res = res_tmp;
 				}
@@ -214,7 +239,15 @@ protected:
 			{
 				if (h1->degree == res_tmp->degree)
 				{
+					if (!e3)
+					{
+						res_par = res;
+						while (res_par->right != res_tmp)
+							res_par = res_par->right;
+					}
 					res_tmp = merge_two(res_tmp, h1);
+					if (!e3)
+						res_par->right = res_tmp;
 					if (e3)
 						res = res_tmp;
 				}
@@ -228,6 +261,7 @@ protected:
 		}while (tmpi != heap->root);
 
 		res_tmp->right = res;
+		heap->size = 0;
 		return res;
 	}
 
@@ -245,6 +279,8 @@ public:
 		root = merge_bin(h1);
 		size++;
 		findMinNode();
+		h1->size = 0;
+		delete h1;
 		
 	}
 
@@ -268,7 +304,8 @@ public:
 		size--;
 		if (size > 0)
 			findMinNode();
-		
+		h1->size = 0;
+		delete h1;
 	}
 
 	TValue& findMin()
