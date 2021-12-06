@@ -262,6 +262,21 @@ protected:
 		return res;
 	}
 
+	void rec_del(Node* _root)
+	{
+		if (_root->child) {
+			while (_root->child->right != _root->child)
+			{
+				Node* tmp = _root->child->right;
+				tmp = tmp->right;
+				rec_del(_root->child->right);
+				_root->child->right = tmp;
+			}
+			rec_del(_root->child);
+		}
+		delete _root;
+	}
+
 public:
 	BinomialHeap(const Compare<TKey>* cmp) :AHeap<TKey, TValue>(cmp)
 	{
@@ -329,7 +344,18 @@ public:
 
 	~BinomialHeap()
 	{
-		while (size > 0)
-			removeMin();
+		if (size > 0)
+		{
+			while (root->right != root)
+			{
+				Node* tmp = root->right;
+				root->right = tmp->right;
+				rec_del(tmp);
+			}
+			rec_del(root);
+			root = nullptr;
+			rootm = nullptr;
+			size = 0;
+		}
 	}
 };
