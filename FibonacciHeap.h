@@ -141,6 +141,21 @@ protected:
 		root->left = tmp;
 	}
 
+	void rec_del(Node* _root)
+	{
+		if (_root->child) {
+			while (_root->child->right != _root->child)
+			{
+				Node* tmp = _root->child->right;
+				tmp = tmp->right;
+				rec_del(_root->child->right);
+				_root->child->right = tmp;
+			}
+			rec_del(_root->child);
+		}
+		delete _root;
+	}
+
 public:
 	FibonacciHeap(const Compare<TKey>* cmp) :AHeap<TKey, TValue>(cmp)
 	{
@@ -215,7 +230,17 @@ public:
 
 	~FibonacciHeap()
 	{
-		while (size > 0)
-			removeMin();
+		if (size > 0)
+		{
+			while (root->right != root)
+			{
+				Node* tmp = root->right;
+				root->right = tmp->right;
+				rec_del(tmp);
+			}
+			rec_del(root);
+			root = nullptr;
+			size = 0;
+		}
 	}
 };
