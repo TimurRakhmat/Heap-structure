@@ -123,6 +123,9 @@ public:
 	~BinaryHeap()
 	{
 		if (h)
-			delete h;
+			delete[] h;
+		h = nullptr;
+		static_size = 200;
+		size = 0;
 	}
 };
