@@ -1,6 +1,4 @@
 #pragma once
-#include<map>
-
 #include"AHeap.h"
 
 template<class TKey, class TValue>
@@ -261,7 +259,6 @@ protected:
 		}while (tmpi != heap->root);
 
 		res_tmp->right = res;
-		heap->size = 0;
 		return res;
 	}
 
@@ -325,7 +322,7 @@ public:
 	void merge(AHeap<TKey, TValue>* heap) {
 		while (size > 0)
 		{
-			heap->insert(root->key, root->val);
+			heap->insert(rootm->key, rootm->val);
 			removeMin();
 		}
 	}
