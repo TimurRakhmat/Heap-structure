@@ -12,11 +12,12 @@ class Bank
 {
 protected:
 	int n = 5; // count of departament
-	vector<int> pers = { 4, 8, 2, 3, 9 }; // count of personal in each departament
+	vector<int> pers = { 4, 8, 2, 3, 9}; // count of personal in each departament
 	static const int t = 15; // time delay
 	static const int td = 5; // delta time
-	int lmax = 2;
+	int lmax = 6;
 	int current_l = 0;
+	int current_l_l = 0;
 	int l = 1; // in %
 
 	class MSG
@@ -53,11 +54,10 @@ protected:
 				return 0;
 			if (left->u > right->u)
 				return left->u - right->u;
-			if (right->h > left->h)
+			if (left->h > right->h)
 				return left->h - right->h;
-			if (right->min > left->min)
+			else 
 				return left->min - right->min;
-			return -1;
 		}
 	};
 
@@ -72,6 +72,7 @@ protected:
 			int work_time = 0;
 			int dinner_time = 0;
 			int task_time = 0;
+			int task_buf = 0;
 			bool free = true, dinner = false, have_dinner = false, finished_work = false;
 			int id;
 			Logger* lg_s;

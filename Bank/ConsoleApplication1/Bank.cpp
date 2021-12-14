@@ -63,22 +63,29 @@ void Bank::start()
 			int stop_dep = (rand() % 100) + 1;
 			if (current_l < lmax)
 			{
-				if (stop_dep <= l)
+				if (stop_dep <= l and current_l_l < n)
 				{
 					while (1)
 					{
 						int dep_index = rand() % n;
 						if (!deps[dep_index]->isFree())
 							continue;
+						find_free()->msg_count += deps[dep_index]->msg_count;
 						deps[dep_index]->setPause(find_free()->num);
 						deps[dep_index]->msg_heap->merge(find_free()->msg_heap);
+						deps[dep_index]->msg_count = 0;
 						current_l++;
 						break;
 					}
 				}
 			}
+			current_l_l = n;
 			for (int i = 0; i < n; i++)
+			{
 				deps[i]->nextStep();
+				if (deps[i]->isFree())
+					current_l_l--;
+			}
 		}
 	}
 }
@@ -205,13 +212,13 @@ double Bank::Departament::getCapacity()
 			prs_count += 1;
 	}
 	if (prs_count == 0)
-		return 2*msg_count;
-	return (double)msg_count/(double)personal_current_count;
+		return (double)2*msg_count;
+	return (double)msg_count/(double)prs_count;
 }
 
 Bank::Departament::Departament(int num_, Compare<Bank::MSG*>* cmp, int n) : num(num_ + 1), personal_count(n)
 {
-	msg_heap = new BinomialHeap<MSG*, MSG*>(cmp);
+	msg_heap = new BinaryHeap<MSG*, MSG*>(cmp);
 	string name1 = "full_log_dep_" + to_string(num) + ".log", name2 = "log_dep_" + to_string(num) + ".log",\
 		msg_file = "msg_log_dep_" + to_string(num) + ".log";
 	lg.SetNext(name1, 1)->SetNext(name2, 3)->SetNext(msg_file, 0);
@@ -221,15 +228,19 @@ Bank::Departament::Departament(int num_, Compare<Bank::MSG*>* cmp, int n) : num(
 
 Bank::Departament::~Departament()
 {
-	string text = "Departament ¹" + to_string(num) + " finished work;";
-	lg.Handle(text, 3, "21:00");
+
 	for (int i = 0; i < personal_count; i++)
+	{
+		msg_count += ps[i]->task_buf;
 		delete ps[i];
+	}
 	while (!msg_heap->isEmpty())
 	{
 		delete msg_heap->findMin();
 		msg_heap->removeMin();
 	}
+	string text = "Departament ¹" + to_string(num) + " finished work with task in count: " + to_string(msg_count);
+	lg.Handle(text, 3, "21:00");
 }
 
 void Bank::Departament::setPause(int num_of_dep)
@@ -253,6 +264,7 @@ Bank::Departament::Slave::Slave(Logger* lg_, int h, int min, int id_)
 void Bank::Departament::Slave::setTask(MSG* msg, int h, int min)
 {
 	free = false;
+	task_buf = 1;
 	task_time = Bank::t + (rand() % (Bank::td * 2 + 1)) - Bank::td + msg->c * 2;
 	string text;
 	text = to_string(id) + " started process: " + msg->text + "; time to task- " + to_string(task_time);
@@ -304,6 +316,7 @@ void Bank::Departament::Slave::step(int h, int min)
 			text = to_string(id) + " finished process;";
 			lg_s->Handle(text, 2, make_time(h, min));
 			free = true;
+			task_buf = 0;
 			try_dinner(h, min);
 		}
 	}
