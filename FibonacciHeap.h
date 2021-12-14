@@ -60,7 +60,7 @@ protected:
 						res->right = res;
 					}
 					tmp = res;
-					if (this->cmp->compare(root->key, tmp->key) > 0)
+					if (this->cmp->compare(root->key, tmp->key) >= 0)
 					{
 						root = tmp;
 					}
@@ -70,7 +70,7 @@ protected:
 			}
 			else
 			{
-				if (this->cmp->compare(root->key, tmp->key) > 0)
+				if (this->cmp->compare(root->key, tmp->key) >= 0)
 				{
 					root = tmp;
 				}
@@ -89,7 +89,7 @@ protected:
 	Node* merge_two(Node* nd1, Node* nd2)
 	{
 		int res = this->cmp->compare(nd1->key, nd2->key);
-		if (res > 0)
+		if (res >= 0)
 		{
 			nd1->right = nd1;
 			nd1->left = nd1;
@@ -214,9 +214,9 @@ public:
 	bool isEmpty()
 	{
 		if (size > 0)
-			return true;
-		else
 			return false;
+		else
+			return true;
 	}
 
 

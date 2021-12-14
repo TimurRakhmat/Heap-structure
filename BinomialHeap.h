@@ -328,9 +328,9 @@ public:
 	bool isEmpty()
 	{
 		if (size > 0)
-			return true;
-		else
 			return false;
+		else
+			return true;
 	}
 
 
