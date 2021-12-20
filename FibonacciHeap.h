@@ -21,7 +21,7 @@ protected:
 	};
 	Node* root = nullptr;
 
-	Node* findMinNode()
+	void findMinNode()
 	{
 		if (size < 1)
 			throw AHeap<TKey, TValue>::HeapException("FIND ERROR: EMPTY HEAP");
@@ -30,11 +30,11 @@ protected:
 		do
 		{
 			Node* res = nullptr;
-			if (mp.find(tmp->degree) != mp.end())
+			if (mp.findVertex(tmp->degree) != mp.end())
 			{
 				if (mp[tmp->degree] == tmp) // end;
 					break;
-				while (mp.find(tmp->degree) != mp.end())
+				while (mp.findVertex(tmp->degree) != mp.end())
 				{
 					Node* cgN = mp[tmp->degree];
 					mp.erase(tmp->degree);
