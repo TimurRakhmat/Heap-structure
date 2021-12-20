@@ -52,9 +52,9 @@ protected:
 		int compare(MSG* const& left, MSG* const& right) const {
 			if (left->u == right->u and left->h == right->h and left->min == right->min)
 				return 0;
-			if (left->u > right->u)
-				return left->u - right->u;
-			if (left->h > right->h)
+			if (left->u != right->u)
+				return right->u - left->u;
+			if (left->h != right->h)
 				return left->h - right->h;
 			else 
 				return left->min - right->min;
@@ -91,7 +91,7 @@ protected:
 		int extra_time = 0;
 		int num;
 		int msg_count = 0;
-		Logger lg;
+		Logger* lg;
 		int h = 8;
 		int min = 0;
 		AHeap<MSG*, MSG*>* msg_heap;

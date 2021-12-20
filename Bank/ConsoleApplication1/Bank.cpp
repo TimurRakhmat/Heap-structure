@@ -133,7 +133,7 @@ void Bank::Departament::add_msg(Bank::MSG* msg)
 {
 	msg_heap->insert(msg, msg);
 	string text = "get msg to dep¹ " + to_string(msg->a + 1);
-	lg.Handle(text, 0, make_time(h, min));
+	lg->Handle(text, 0, make_time(h, min));
 	msg_count++;
 }
 
@@ -148,7 +148,7 @@ void Bank::Departament::nextStep()
 			for (int i = 0; i < that_count; i++)
 			{
 				int id = num*1000 + personal_current_count;
-				ps.push_back(new Slave(&lg, h, min, id));
+				ps.push_back(new Slave(lg, h, min, id));
 				personal_current_count++;
 			}
 		}
@@ -159,7 +159,7 @@ void Bank::Departament::nextStep()
 		for (int i = 0; i < that_count; i++)
 		{
 			int id = num * 1000 + personal_current_count;
-			ps.push_back(new Slave(&lg, h, min, id));
+			ps.push_back(new Slave(lg, h, min, id));
 			personal_current_count++;
 		}
 	}
@@ -189,7 +189,7 @@ void Bank::Departament::nextStep()
 			free = true;
 			string text;
 			text = to_string(num) + "  end of overload";
-			lg.Handle(text, 4, make_time(h, min));
+			lg->Handle(text, 4, make_time(h, min));
 		}
 		else
 			extra_time--;
@@ -221,9 +221,12 @@ Bank::Departament::Departament(int num_, Compare<Bank::MSG*>* cmp, int n) : num(
 	msg_heap = new BinaryHeap<MSG*, MSG*>(cmp);
 	string name1 = "full_log_dep_" + to_string(num) + ".log", name2 = "log_dep_" + to_string(num) + ".log",\
 		msg_file = "msg_log_dep_" + to_string(num) + ".log";
-	lg.SetNext(name1, 1)->SetNext(name2, 3)->SetNext(msg_file, 0);
+	LogBuilder lb;
+	lb.add_next(name1, 1)->add_next(name2, 3)->add_next(msg_file, 0);
+	
+	lg = new Logger(&lb);
 	string text = "Departament ¹" + to_string(num) + " started work;";
-	lg.Handle(text, 3, "8:00");
+	lg->Handle(text, 3, "8:00");
 }
 
 Bank::Departament::~Departament()
@@ -240,7 +243,8 @@ Bank::Departament::~Departament()
 		msg_heap->removeMin();
 	}
 	string text = "Departament ¹" + to_string(num) + " finished work with task in count: " + to_string(msg_count);
-	lg.Handle(text, 3, "21:00");
+	lg->Handle(text, 3, "21:00");
+	delete lg;
 }
 
 void Bank::Departament::setPause(int num_of_dep)
@@ -249,7 +253,7 @@ void Bank::Departament::setPause(int num_of_dep)
 	extra_time = rand() % 120 + 60;
 	string text;
 	text = to_string(num) + "  is overload, send msg to departament ¹" + to_string(num_of_dep + 1);
-	lg.Handle(text, 4, make_time(h, min));
+	lg->Handle(text, 4, make_time(h, min));
 }
 
 Bank::Departament::Slave::Slave(Logger* lg_, int h, int min, int id_)
