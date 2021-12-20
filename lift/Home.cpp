@@ -2,11 +2,14 @@
 
 void Home::init(string setfile)
 {
-	lt_lg = new Logger;
-	pl_lg = new Logger;
+	
 	string lt_name = "lift.log", pl_name = "people.log";
-	lt_lg->SetNext(lt_name, 2);
-	pl_lg->SetNext(pl_name, 2);
+
+	LogBuilder lb;
+	lb.add_next(lt_name, 2)->add_next(pl_name, 2);
+
+	lt_lg = new Logger(&lb);
+	pl_lg = new Logger(&lb);
 
 	ifstream setF(setfile);
 	setF >> n >> k;
@@ -230,7 +233,7 @@ string Home::Time::get_string()
 
 void Home::Time::set_string(string time_s)
 {
-	int sep_pos = time_s.find(':');
+	int sep_pos = time_s.findVertex(':');
 	h = atoi(time_s.substr(0, sep_pos).c_str());
 	min = atoi(time_s.substr(sep_pos + 1).c_str());
 	sec = 0;
