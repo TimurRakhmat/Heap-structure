@@ -98,12 +98,13 @@ void Infection::start()
 
 		for (int j = 0; j < count; j++)
 		{
-			if (ppls[j]->isSick)
+			if (ppls[j]->isSick) {
 				if (rand() % 100 + 1 < p2)
 				{
 					ppls[j]->getWell();
 					break;
 				}
+			}
 		}
 	}
 }
@@ -120,22 +121,31 @@ Infection::~Infection()
 	lb.add_next(name, 0);
 	Logger lg(&lb);
 
+	lg.Handle("----------------was never sick------------------", 0, "notSick");
 	for (int j = 0; j < count; j++)
 	{
 		if (!ppls[j]->isSick and !ppls[j]->wasSick)
 		{
-			lg.Handle(ppls[j]->name + " " + ppls[j]->surname, 0, "notSick");
+			lg.Handle(ppls[j]->name + " " + ppls[j]->surname + " - " + to_string(ppls[j]->id), 0, "notSick");
 		}
 	}
+	lg.Handle("----------------was never sick------------------", 0, "notSick");
 
+	lg.Handle("               ", 6, "-");
+
+	lg.Handle("----------------getWell now------------------", 0, "getWell");
 	for (int j = 0; j < count; j++)
 	{
 		if (!ppls[j]->isSick and ppls[j]->wasSick)
 		{
-			lg.Handle(ppls[j]->name + " " + ppls[j]->surname, 1, "getWell");
+			lg.Handle(ppls[j]->name + " " + ppls[j]->surname + " - " + to_string(ppls[j]->id), 1, "getWell");
 		}
 	}
+	lg.Handle("----------------getWell now------------------", 0, "getWell");
 
+	lg.Handle("               ", 6, "-");
+
+	lg.Handle("----------------get well, not other------------------", 0, "getWell, but");
 	for (int j = 0; j < count; j++)
 	{
 		bool flag = true;
@@ -152,11 +162,15 @@ Infection::~Infection()
 
 			if (flag)
 			{
-				lg.Handle(ppls[j]->name + " " + ppls[j]->surname, 2, "getWell, not other");
+				lg.Handle(ppls[j]->name + " " + ppls[j]->surname + " - " + to_string(ppls[j]->id) , 2, "getWell, not other");
 			}
 		}
 	}
+	lg.Handle("----------------get well, not other------------------", 0, "getWell, but");
 
+	lg.Handle("               ", 6, "-");
+
+	lg.Handle("----------------were never sick, but around------------------", 0, "was not sick, but");
 	for (int j = 0; j < count; j++)
 	{
 		bool flag = true;
@@ -173,21 +187,29 @@ Infection::~Infection()
 
 			if (flag)
 			{
-				lg.Handle(ppls[j]->name + " " + ppls[j]->surname, 3, "was not sick, but other");
+				lg.Handle(ppls[j]->name + " " + ppls[j]->surname + " - " + to_string(ppls[j]->id), 3, "was not sick, but other");
 			}
 		}
 	}
+	lg.Handle("----------------were never sick, but around------------------", 0, "was not sick, but");
 
+	
+
+	
 	if (repeat)
 	{
+		lg.Handle("               ", 6, "-");
+		lg.Handle("----------------Were sick more one time------------------", 0, "sick more");
 		for (int j = 0; j < count; j++)
 		{
 			if (ppls[j]->count_of_sick > 1)
 			{
-				lg.Handle(ppls[j]->name + " " + ppls[j]->surname, 4, "sick more one");
+				lg.Handle(ppls[j]->name + " " + ppls[j]->surname + " - " + to_string(ppls[j]->id), 4, "sick more one");
 			}
 		}
+		lg.Handle("----------------Were sick more one time------------------", 0, "sick more");
 	}
+	
 
 	for (int j = 0; j < count; j++)
 	{

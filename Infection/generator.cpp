@@ -32,7 +32,7 @@ Generator::Generator(int p_count, int day, double percent_1, double percent_2, b
 		gr.addedge(i, (i + 1) % p_count); // make adjacent graph
 		gr.addedge((i + 1) % p_count, i);
 
-		int c = rand() % 10;
+		int c = 4 + rand() % 6;
 		for (int j = 0; j < c; j++) // add some edge
 		{
 			int index = rand() % p_count;
